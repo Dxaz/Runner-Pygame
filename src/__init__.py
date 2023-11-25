@@ -43,6 +43,11 @@ title_surf_rect = title_surf.get_rect(midtop = (400,50))
 start_ins_surf = game_font.render('PRESS  [SPACE]  TO  START',False, (111,196,169))
 start_ins_rect = start_ins_surf.get_rect(midtop = (400,350))
 
+# Timer
+obstacle_timer = pygame.USEREVENT + 1
+pygame.time.set_timer(obstacle_timer, 900)
+
+
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -57,14 +62,15 @@ while True:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE and player_rect.bottom == 300:
                         player_gravity = -20
-            
+            if event.type == obstacle_timer:
+                print('test')
             
         else:
-             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 snail_rect.x=900
                 player_rect.bottom = 300
                 game_active = True
-
+                
     if game_active:
         screen.blit(ground_surf,(0,300))
         screen.blit(sky_surf,(0,0))
