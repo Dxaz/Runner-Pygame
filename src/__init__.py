@@ -25,18 +25,25 @@ def obstacle_movement(obstacle_list):
     
     return []
 
+def collisions(player, obstacles):
+    if obstacles:
+        for obstacle_rect in obstacles:
+            if player.colliderect(obstacle_rect): return False
+    return True
 
 # pygame setup
 pygame.init()
 screen = pygame.display.set_mode((800, 400))
-
 pygame.display.set_caption(TITLE)
 clock = pygame.time.Clock()
+
+# Global variables
 game_font = pygame.font.Font('assets/font/Pixeltype.ttf', 50)
 game_active = False
 start_time = 0
 score = None
 
+# Forground and background
 sky_surf =  pygame.image.load('assets/graphics/Sky.png').convert()
 ground_surf = pygame.image.load('assets/graphics/ground.png').convert()
 
@@ -46,6 +53,7 @@ fly_surf = pygame.image.load('assets/graphics/Fly/Fly1.png').convert_alpha()
 
 obstacle_rect_list = []
 
+# Player
 player_surf = pygame.image.load('assets/graphics/Player/player_walk_1.png').convert_alpha()
 player_rect = player_surf.get_rect(midbottom = (80, 300))
 player_gravity = 0
@@ -55,8 +63,8 @@ player_stand = pygame.image.load('assets/graphics/Player/player_stand.png').conv
 player_stand = pygame.transform.rotozoom(player_stand,0,2)
 player_stand_rect = player_stand.get_rect(center = (400,200))
 
-title_surf = game_font.render('Pixel Runner!',False, (111,196,169))
-title_surf_rect = title_surf.get_rect(midtop = (400,50))
+game_name = game_font.render('Pixel Runner!',False, (111,196,169))
+game_name_rect = game_name.get_rect(midtop = (400,50))
 
 start_ins_surf = game_font.render('PRESS  [SPACE]  TO  START',False, (111,196,169))
 start_ins_rect = start_ins_surf.get_rect(midtop = (400,350))
@@ -112,18 +120,22 @@ while True:
         
 
         # collision
-    
+        game_active = collisions(player_rect, obstacle_rect_list)
+
     else:
         screen.fill((94,129,162))
         screen.blit(player_stand, player_stand_rect)
-        screen.blit(title_surf,title_surf_rect )
+        obstacle_rect_list.clear()
+        player_rect.midbottom = (80, 300)
+        player_gravity = 0
+        
 
-        title_score_surf = game_font.render(f"Your score: {score}",False, (111,196,169))
-        title_score_rect = title_score_surf.get_rect(midtop = (400,300))
-        if score == None:
-            screen.blit(start_ins_surf, start_ins_rect)
-        else:
-            screen.blit(title_score_surf, title_score_rect)
+        score_message = game_font.render(f"Your score: {score}",False, (111,196,169))
+        score_message_rect = score_message.get_rect(midtop = (400,300))
+        screen.blit(game_name,game_name_rect )
+        
+        if score == None: screen.blit(start_ins_surf, start_ins_rect)
+        else: screen.blit(score_message, score_message_rect)
 
     pygame.display.update()
     clock.tick(60)
