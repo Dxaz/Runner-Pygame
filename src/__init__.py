@@ -2,7 +2,9 @@ import pygame
 
 from _player import Player
 from _obstacle import Obstacle
-from pygame.sprite import (Group, GroupSingle)
+from pygame.sprite import (Group, 
+                           GroupSingle, 
+                           spritecollide)
 from random import choice
 from sys import exit
 
@@ -16,11 +18,11 @@ clock = pygame.time.Clock()
 
 # Global variables
 game_font = pygame.font.Font('assets/font/Pixeltype.ttf', 50)
-game_active = True
+game_active = False
 start_time = 0
 score = None
 
-# Forground and background
+# Foreground & Background
 sky_surf =  pygame.image.load('assets/graphics/Sky.png').convert()
 ground_surf = pygame.image.load('assets/graphics/ground.png').convert()
 
@@ -56,12 +58,9 @@ def display_score():
     screen.blit(score_surf, score_rect)
     return current_time
 
-def collisions(player, obstacles):
-    if obstacles:
-        for obstacle_rect in obstacles:
-            if player.colliderect(obstacle_rect): return False
+def collision_sprite():
+    if spritecollide(player.sprite, obstacles, True): return False
     return True
-
 
 while True:
     for event in pygame.event.get():
@@ -70,19 +69,22 @@ while True:
             exit()
         
         if game_active:
-           
             if event.type == obstacle_timer:
                 obstacles.add(Obstacle(choice(obstacles_list)))
                
         else:
+            # In start or game over menu
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-                # player_rect.bottom = 300
                 game_active = True
+                start_time = int(pygame.time.get_ticks() / 1000)     
+                
 
     if game_active:
+        # Foreground & Background
         screen.blit(ground_surf,(0,300))
         screen.blit(sky_surf,(0,0))
-        # score
+        
+        # Score
         score = display_score()
         
         # Obstacles
@@ -93,24 +95,24 @@ while True:
         player.draw(screen)
         player.update()
         
-
-        # collision
-        # game_active = collisions(player, obstacle_rect_list)
+        # Collision
+        game_active = collision_sprite()
 
     else:
+        # Background and character
         screen.fill((94,129,162))
         screen.blit(player_stand, player_stand_rect)
-        
-        # obstacle_rect_list.clear()
-        # player_rect.midbottom = (80, 300)
-        # player_gravity = 0
 
+        # Text
         score_message = game_font.render(f"Your score: {score}",False, (111,196,169))
         score_message_rect = score_message.get_rect(midtop = (400,300))
-        screen.blit(game_name,game_name_rect )
+        screen.blit(game_name,game_name_rect)
         
         if score == None: screen.blit(start_ins_surf, start_ins_rect)
         else: screen.blit(score_message, score_message_rect)
+        
+        # Clear obstacles group
+        obstacles.empty()
 
     pygame.display.update()
     clock.tick(60)
