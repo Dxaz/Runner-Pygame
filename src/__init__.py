@@ -2,6 +2,7 @@ import pygame
 
 from _player import Player
 from _obstacle import Obstacle
+from pygame.mixer import Sound
 from pygame.sprite import (Group, 
                            GroupSingle, 
                            spritecollide)
@@ -21,6 +22,10 @@ game_font = pygame.font.Font('assets/font/Pixeltype.ttf', 50)
 game_active = False
 start_time = 0
 score = None
+bg_music = Sound('assets/audio/music.wav')
+bg_music.set_volume(0.3)
+bg_music.play(loops=-1)
+
 
 # Foreground & Background
 sky_surf =  pygame.image.load('assets/graphics/Sky.png').convert()

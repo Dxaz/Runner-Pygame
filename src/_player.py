@@ -2,6 +2,7 @@ from pygame import (K_SPACE,
                     MOUSEBUTTONDOWN)
 from pygame.image import load
 from pygame.key import get_pressed
+from pygame.mixer import Sound
 from pygame.sprite import Sprite
 
 class Player(Sprite):
@@ -17,10 +18,14 @@ class Player(Sprite):
         self.rect = self.image.get_rect(midbottom = (80, 300))
         self.gravity = 0
 
+        self.jump_sound = Sound('assets/audio/jump.mp3')
+        self.jump_sound.set_volume(0.5)
+
     def player_input(self):
         keys = get_pressed()
-        if keys[K_SPACE] and self.rect.bottom == 300: self.gravity = -20
-        if keys[MOUSEBUTTONDOWN] and self.rect.bottom == 300: self.gravity = -20
+        if keys[K_SPACE] and self.rect.bottom >= 300: 
+            self.jump_sound.play()
+            self.gravity = -20
 
     def apply_gravity(self):
         self.gravity += 1
