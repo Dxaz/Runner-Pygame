@@ -67,56 +67,60 @@ def collision_sprite():
     return True
 
 while True:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            exit()
-        
-        if game_active:
-            if event.type == obstacle_timer:
-                obstacles.add(Obstacle(choice(obstacles_list)))
-               
-        else:
-            # In start or game over menu
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-                game_active = True
-                start_time = int(pygame.time.get_ticks() / 1000)     
+    try:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            
+            if game_active:
+                if event.type == obstacle_timer:
+                    obstacles.add(Obstacle(choice(obstacles_list)))
                 
+            else:
+                # In start or game over menu
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                    game_active = True
+                    start_time = int(pygame.time.get_ticks() / 1000)     
+                    
 
-    if game_active:
-        # Foreground & Background
-        screen.blit(ground_surf,(0,300))
-        screen.blit(sky_surf,(0,0))
-        
-        # Score
-        score = display_score()
-        
-        # Obstacles
-        obstacles.draw(screen)
-        obstacles.update()
-        
-        # Player
-        player.draw(screen)
-        player.update()
-        
-        # Collision
-        game_active = collision_sprite()
+        if game_active:
+            # Foreground & Background
+            screen.blit(ground_surf,(0,300))
+            screen.blit(sky_surf,(0,0))
+            
+            # Score
+            score = display_score()
+            
+            # Obstacles
+            obstacles.draw(screen)
+            obstacles.update()
+            
+            # Player
+            player.draw(screen)
+            player.update()
+            
+            # Collision
+            game_active = collision_sprite()
 
-    else:
-        # Background and character
-        screen.fill((94,129,162))
-        screen.blit(player_stand, player_stand_rect)
+        else:
+            # Background and character
+            screen.fill((94,129,162))
+            screen.blit(player_stand, player_stand_rect)
 
-        # Text
-        score_message = game_font.render(f"Your score: {score}",False, (111,196,169))
-        score_message_rect = score_message.get_rect(midtop = (400,300))
-        screen.blit(game_name,game_name_rect)
-        
-        if score == None: screen.blit(start_ins_surf, start_ins_rect)
-        else: screen.blit(score_message, score_message_rect)
-        
-        # Clear obstacles group
-        obstacles.empty()
+            # Text
+            score_message = game_font.render(f"Your score: {score}",False, (111,196,169))
+            score_message_rect = score_message.get_rect(midtop = (400,300))
+            screen.blit(game_name,game_name_rect)
+            
+            if score == None: screen.blit(start_ins_surf, start_ins_rect)
+            else: screen.blit(score_message, score_message_rect)
+            
+            # Clear obstacles group
+            obstacles.empty()
 
-    pygame.display.update()
-    clock.tick(60)
+        pygame.display.update()
+        clock.tick(60)
+    except KeyboardInterrupt:
+        pygame.quit()
+        exit()
