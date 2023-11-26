@@ -26,7 +26,6 @@ score = None
 sky_surf =  pygame.image.load('assets/graphics/Sky.png').convert()
 ground_surf = pygame.image.load('assets/graphics/ground.png').convert()
 
-
 # Obstacles
 obstacles_list = ['fly', 'snail', 'snail', 'snail']
 obstacles = Group()
